@@ -1,3 +1,25 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 12/28/2025 03:30:33 PM
+// Design Name: 
+// Module Name: qs_fifo 
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+`include "qs_fifo.v" 
+
 module ordering (
   input   wire        clk,
   input   wire        reset,
@@ -21,5 +43,37 @@ module ordering (
 
 );
   // Write your logic here
+  parameter CAT_W = 19;
+  
+  wire [CAT_W-1:0] ord_dout;
+  wire [CAT_W-1:0] unord_dout;
+  
+  qs_fifo #(
+    .DATA_W(CAT_W),
+    .DEPTH (8)
+  ) ORD_FIFO (
+    .clk        (clk                                ),
+    .reset      (reset                              ),
+    .push_i     (rx_valid_i & rx_order_i            ),
+    .push_data_i({rx_order_i, rx_id_i, rx_payload_i}),
+    .pop_i      (
+    .pop_data_o (ord_dout
+    .empty_o    (
+    .full_o     (
+  );
+  
+  qs_fifo #(
+    .DATA_W(CAT_W),
+    .DEPTH (8)
+  ) UNORD_FIFO (
+    .clk        (clk                                ),
+    .reset      (reset                              ),
+    .push_i     (rx_valid_i & ~rx_order_i           ),
+    .push_data_i({rx_order_i, rx_id_i, rx_payload_i}),
+    .pop_i      (rx_ret_i
+    .pop_data_o (unord_dout
+    .empty_o    (
+    .full_o     (
+  );
 
 endmodule
